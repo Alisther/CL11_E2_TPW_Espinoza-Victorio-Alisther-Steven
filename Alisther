@@ -1,0 +1,98 @@
+<?php
+ob_start();
+?>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title></title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="https:maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+	 <script src="https://ajax.gloogleapis.com/ajax/libd/jquery/3.5.1/jquery.min.js"></script>
+     <link type="text/css" href="css/jquery.dataTables_themeroller.css" rel="stylesheet"/>
+	 <script type="text/javascript" src="js/jquery.js"></script>
+     <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+</head>
+<body>
+<?php  
+$servidor="localhost";
+$usuario="root";
+$clave="";
+$bdd="tecnologico";
+$conexion=mysqli_connect($servidor,$usuario,$clave,$bdd);
+$tabla="SELECT * FROM cursos WHERE codcur like 'CP%' ";
+$conectar=mysqli_query($conexion,$tabla);
+$cursos=array();
+while($filas=mysqli_fetch_array($conectar))
+{
+	$cursos[]=$filas;
+}
+	
+?>
+<div class="container">
+<h3><center>COMPUTACION E INFORMATICA</center></h3>
+	<table class="table table-striped table-dark" border="2">
+         <tr>
+         <center><td>Nro</td><td>CODIGO</td><td>NOMBRES</td><td>CREDITOS</td><td>HORAS</td></center>
+		</tr>
+		<tbody>
+			<?php  
+				$x=0;
+				foreach($cursos as $curso)
+				{
+					++$x;
+			?>
+				<tr>
+					<td><?php echo $x; ?></td>
+					<td><?php echo $curso["codcur"]; ?></td>
+					<td><?php echo $curso["nombre"];?></td>
+					<td><?php echo $curso["cred"];?></td>
+					<td><?php echo $curso["horas"];?></td>
+				</tr>
+			<?php		
+				}
+			?>
+
+		</tbody>
+	</table>
+<?php  
+	if(isset($_POST["exportar"])) 
+	{
+		 if(!empty($cursos)) 
+		 {
+		 	$filename ="cursos.xls";
+		 	header("Content-Type: application/vnd.ms-excel; name='excel'");
+		 	header("Content-Disposition: attachment; filename=".$filename);
+			header('Pragma: public');
+			header('Cache-Control: no-store, no-cache, must-revalidate');
+			header('Cache-Control: pre-check=0, post-check=0, max-age=0');
+			header('Pragma: no-cache');
+			header('Expires: 0');
+			header('Content-Transfer-Encoding: none');
+			header('Content-type: application/x-msexcel; charset=utf-8'); 
+			header("Content-Disposition: attachment; filename=".$filename);
+			header("Content-Type: application/force-download");
+			header("Content-Type: application/octet-stream");
+
+		 }
+		 else
+		 {
+		 	echo 'No hay datos a exportar';
+		 }
+		 exit;
+	}
+?>
+</div>
+<form action=" <?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
+		<button type="submit" id="exportar" name='exportar'
+value="Export to excel" class="btn btn-primary btn-block">Exportar a Excel</button>
+	</form>
+</body>
+</html>
+<?php
+ob_end_flush();
+?>
