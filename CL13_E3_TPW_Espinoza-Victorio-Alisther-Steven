@@ -1,0 +1,13 @@
+producto=[]
+precio=[]
+mayor=0
+for i in range(0,4):
+    producto.append(input("Escriba producto: "+str(i+1)+": "))
+    precio.append(input("Precio: "))
+
+i_may=precio.index(max(precio))
+i_min=precio.index(min(precio))
+
+print("")
+print("El producto con mayor costo es: ",producto[i_may])
+print("El Producto con menor precio es: ",producto[i_min])
